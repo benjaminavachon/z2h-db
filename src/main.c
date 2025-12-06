@@ -11,18 +11,22 @@ void print_usage(char *argv[]) {
     printf("Usage: %s -n -f <database file>\n", argv[0]);
     printf("\t -n - create new database file\n");
     printf("\t -f - (required) path to database file\n");
+    printf("\t -l - list employees\n");
+    printf("\t -a - add employee\n");
     return;
 }
 
 int main(int argc, char *argv[]) { 
-    char *filepath;
+    char *filepath = NULL;
+    char *addstring = NULL;
     bool newfile = false;
 	int c = 0;
 
     int dbfd = -1;
     struct dbheader_t *dbhdr = NULL;
+    struct employee_t *employees = NULL;
 
-	while ((c = getopt(argc, argv, "nf:")) != -1) {
+	while ((c = getopt(argc, argv, "nf:a:")) != -1) {
 
 		switch(c) {
 
@@ -31,6 +35,9 @@ int main(int argc, char *argv[]) {
 				break;
 			case 'n':
 				newfile = true;
+				break;
+            case 'a':
+				addstring = optarg;
 				break;
             case '?':
                 printf("unknown option -%c\n",c);
@@ -80,7 +87,17 @@ int main(int argc, char *argv[]) {
             return -1;
         }
     }
+    
+    if(read_employees(dbfd, dbhdr, &employees) != STATUS_SUCCESS)
+    {
+        printf("failed to read employees\n");
+        return 0;
+    }
 
-    output_file(dbfd, dbhdr);
+    if(addstring) {
+        add_employee(dbhdr, &employees, addstring);
+    }
+
+    output_file(dbfd, dbhdr, employees);
 
 }
