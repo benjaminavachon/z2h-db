@@ -98,11 +98,9 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    if (addstring) {
-		dbhdr->count++;
-		employees = realloc(employees, dbhdr->count*(sizeof(struct employee_t)));
-		add_employee(dbhdr, employees, addstring);
-	}
+    if(addstring) {
+        add_employee(dbhdr, &employees, addstring);
+    }
 
     if(list)
     {
