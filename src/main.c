@@ -20,13 +20,14 @@ int main(int argc, char *argv[]) {
     char *filepath = NULL;
     char *addstring = NULL;
     bool newfile = false;
+    bool list = false;
 	int c = 0;
 
     int dbfd = -1;
     struct dbheader_t *dbhdr = NULL;
     struct employee_t *employees = NULL;
 
-	while ((c = getopt(argc, argv, "nf:a:")) != -1) {
+	while ((c = getopt(argc, argv, "nf:a:l")) != -1) {
 
 		switch(c) {
 
@@ -38,6 +39,9 @@ int main(int argc, char *argv[]) {
 				break;
             case 'a':
 				addstring = optarg;
+				break;
+            case 'l':
+				list = true;
 				break;
             case '?':
                 printf("unknown option -%c\n",c);
@@ -66,7 +70,7 @@ int main(int argc, char *argv[]) {
             return -1;
         }
 
-        if (create_db_header(dbfd, &dbhdr) == STATUS_ERROR)
+        if (create_db_header(&dbhdr) == STATUS_ERROR)
         {
             printf("failed to create header\n");
             return -1;
@@ -96,6 +100,11 @@ int main(int argc, char *argv[]) {
 
     if(addstring) {
         add_employee(dbhdr, &employees, addstring);
+    }
+
+    if(list)
+    {
+        list_employees(dbhdr,employees);
     }
 
     output_file(dbfd, dbhdr, employees);
