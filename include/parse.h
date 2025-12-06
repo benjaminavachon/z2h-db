@@ -32,7 +32,7 @@ struct employee_t {
 
 
 
-int create_db_header(int fd, struct dbheader_t **headerOut);
+int create_db_header(struct dbheader_t **headerOut);
 
 int validate_db_header(int fd, struct dbheader_t **headerOut);
 
